@@ -1,21 +1,25 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma-client';
-import Stripe from 'stripe';
-import { envs } from '../config/envs';
+import { stripe } from '../lib/stripe';
 
-const stripe = new Stripe(envs.STRIPE_SECRET_KEY);
+interface CartItem {
+    id: string;
+    quantity: number;
+}
+
+export const getOrders = async (req: Request, res: Response) => {
+    try {
+        const orders = await prisma.order.findMany({ include: { orderItems: true, refunds: true } });
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(500).json({
+            error: 'Something went wrong',
+        });
+    }
+};
 
 export const createCheckoutSession = async (req: Request, res: Response) => {
-    const cart = [
-        {
-            id: '084016ce-d651-4c11-a28c-e982f519e95c',
-            quantity: 2,
-        },
-        {
-            id: '28bc3ea4-b27f-466b-ae66-811ae3110e4b',
-            quantity: 1,
-        },
-    ];
+    const cart: CartItem[] = req.body.cart;
 
     const productIds = cart.map(item => item.id);
 
@@ -30,7 +34,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
         });
 
         if (products.length !== cart.length) {
-            res.status(400).json({ message: `One or more products don't exists` });
+            res.status(400).json({ error: `One or more products don't exists` });
             return;
         }
 
@@ -71,6 +75,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
                 status: 'PENDING',
                 stripeSessionId: session.id,
                 amount: totalAmount,
+                stripeCreatedAt: new Date(session.created * 1000),
                 orderItems: {
                     create: cart.map(item => ({
                         quantity: item.quantity,
@@ -79,12 +84,82 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
                 },
             },
         });
-        console.log({ session });
         res.status(200).json({ url: session.url });
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Something went wrong.',
+            error: 'Something went wrong.',
         });
+    }
+};
+
+export const createRefund = async (req: Request, res: Response) => {
+    const { orderId, amount } = req.body;
+
+    if (!orderId || typeof orderId !== 'string') {
+        res.status(400).json({ error: 'orderId is required and must be a string' });
+        return;
+    }
+
+    if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
+        res.status(400).json({ error: 'amount must be a valid number greater than 0' });
+        return;
+    }
+
+    try {
+        const order = await getOrderById(orderId);
+        if (!order) {
+            res.status(404).json({ error: 'Order not found' });
+            return;
+        }
+
+        /* const paymentIntent = await stripe.paymentIntents.retrieve(order.stripePaymentIntentId!);
+        const chargeId = paymentIntent.charges.data[0].id; */
+
+        const refund = await stripe.refunds.create({
+            payment_intent: order.stripePaymentIntentId!,
+            reason: 'requested_by_customer',
+            ...(amount ? { amount } : {}), // Si no se pasa amount, será total
+        });
+
+        await prisma.refund.create({
+            data: {
+                amount: refund.amount,
+                stripeRefundId: refund.id,
+                orderId: order.id,
+                stripeCreatedAt: new Date(refund.created * 1000),
+                currency: refund.currency,
+                status: refund.status ?? '',
+                reason: refund.reason,
+            },
+        });
+
+        await prisma.order.update({
+            where: {
+                id: order.id,
+            },
+            data: {
+                totalRefunded: order.totalRefunded + refund.amount,
+            },
+        });
+
+        res.json({ message: 'Reembolso creado' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al procesar el reembolso' });
+    }
+};
+
+const getOrderById = async (id: string) => {
+    try {
+        const order = await prisma.order.findFirst({
+            where: {
+                id,
+            },
+        });
+        return order;
+    } catch (error) {
+        console.log(error);
+        throw error;
     }
 };

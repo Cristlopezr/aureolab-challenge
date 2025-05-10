@@ -33,15 +33,32 @@ model ProductImage {
   productId String
 }
 
-model Order {
-  id              String        @id @default(uuid())
-  createdAt       DateTime      @default(now())
-  status          OrderStatus   @default(PENDING)
+model Refund {
+  id              String   @id @default(uuid())
+  stripeRefundId  String   @unique
   amount          Int
-  totalRefunded   Int           @default(0)
-  stripeSessionId String        @unique
+  currency        String
+  status          String
+  reason          String?
+  createdAt       DateTime @default(now())
+  stripeCreatedAt DateTime
+  order           Order    @relation(fields: [orderId], references: [id])
+  orderId         String
+}
+
+model Order {
+  id                    String        @id @default(uuid())
+  createdAt             DateTime      @default(now())
+  stripeCreatedAt       DateTime
+  status                OrderStatus   @default(PENDING)
+  amount                Int
+  totalRefunded         Int           @default(0)
+  stripeSessionId       String        @unique
   stripePaymentIntentId String?
-  orderItems      OrderDetail[]
+  customerEmail         String?
+  customerName          String?
+  orderItems            OrderDetail[]
+  refunds               Refund[]
 }
 
 model OrderDetail {

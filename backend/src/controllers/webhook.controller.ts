@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import Stripe from 'stripe';
 import { envs } from '../config/envs';
 import { prisma } from '../lib/prisma-client';
-
-const stripe = new Stripe(envs.STRIPE_SECRET_KEY);
+import { stripe } from '../lib/stripe';
 
 export const handleStripeWebhook = async (req: Request, res: Response) => {
     const endpointSecret = envs.STRIPE_ENDPOINT_SECRET;
@@ -26,7 +24,6 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
 
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
-
         const stripeSessionId = session.id;
         const stripePaymentIntentId = session.payment_intent;
 
@@ -49,10 +46,36 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
             data: {
                 stripePaymentIntentId: stripePaymentIntentId,
                 status: 'PAID',
+                customerEmail: session.customer_details.email,
+                customerName: session.customer_details.name,
             },
         });
 
         console.log('Order updated successfully');
+    }
+
+    if (event.type === 'payment_intent.payment_failed') {
+        const paymentIntent = event.data.object;
+
+        const session = await stripe.checkout.sessions.list({
+            payment_intent: paymentIntent.id,
+        });
+
+        const checkoutSession = session.data[0];
+
+        if (!checkoutSession) return res.send();
+
+        const order = await prisma.order.findUnique({
+            where: { stripeSessionId: checkoutSession.id },
+        });
+
+        if (order) {
+            await prisma.order.update({
+                where: { id: order.id },
+                data: { status: 'FAILED' },
+            });
+            console.log('Order marked as FAILED');
+        }
     }
 
     res.send();
