@@ -1,87 +1,105 @@
 import { Link } from 'react-router-dom';
 import { PageTitle } from '../../components/ui/page-title';
+import { useCartStore } from '../../store/cart-store';
+import { usdFormatter } from '../../helpers/usd-formatter';
+import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
 
 export const CartPage = () => {
-    const arr = new Array(3).fill(0);
+    const productsInCart = useCartStore(state => state.items);
+    const addItem = useCartStore(state => state.addItem);
+    const decreseQuantity = useCartStore(state => state.decreaseItemQuantity);
+    const removeItem = useCartStore(state => state.removeItemCompletely);
+    const getTotalItems = useCartStore(state => state.getTotalItems);
+    const getTotalAmount = useCartStore(state => state.getTotalAmount);
 
     return (
         <div className='w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'>
             <div className='flex flex-col'>
                 <PageTitle title='Shopping Cart' />
 
-                <EmptyCart />
+                {productsInCart.length === 0 ? (
+                    <EmptyCart />
+                ) : (
+                    <>
+                        <span className='text-xl font-medium mb-4'>Your Items</span>
+                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-10'>
+                            <div className='flex flex-col'>
+                                <div className='bg-white rounded-xl shadow-md p-4 sm:p-6 mb-5'>
+                                    {productsInCart.map(product => (
+                                        <div
+                                            key={product.productId}
+                                            className='flex flex-col gap-2 md:flex-row items-center sm:items-start border-b border-gray-200 py-4 last:border-0'
+                                        >
+                                            <div className='flex-shrink-0 mb-4 sm:mb-0'>
+                                                <img
+                                                    src={`${product.image}?w=150`}
+                                                    width={120}
+                                                    height={120}
+                                                    alt={product.name}
+                                                    className='object-cover aspect-square rounded-lg sm:mr-6'
+                                                />
+                                            </div>
 
-                <span className='text-xl font-medium mb-4'>Your Items</span>
-                <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-10'>
-                    <div className='flex flex-col'>
-                        <div className='bg-white rounded-xl shadow-md p-4 sm:p-6 mb-5'>
-                            <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4'>
-                                <span className='text-gray-600 mb-2 sm:mb-0'>Your cart is empty</span>
-                                <Link to='/' className='text-blue-600 hover:text-blue-800 font-medium'>
-                                    Continue Shopping
-                                </Link>
+                                            <div className='flex-1 min-w-0 text-center sm:text-left'>
+                                                <h3 className='text-lg font-medium break-words'>{product.name}</h3>
+                                                <p className='text-gray-600 mb-2'>
+                                                    {usdFormatter.format(product.price / 100)}
+                                                </p>
+                                                <div className='flex justify-center sm:justify-start'>
+                                                    <button onClick={() => decreseQuantity(product.productId)}>
+                                                        <HiMinusCircle size={30} />
+                                                    </button>
+
+                                                    <span className='w-20 flex items-center justify-center mx-3 px-5 bg-gray-100 rounded'>
+                                                        {product.quantity}
+                                                    </span>
+
+                                                    <button onClick={() => addItem(product)}>
+                                                        <HiPlusCircle size={30} />
+                                                    </button>
+                                                </div>
+
+                                                <button
+                                                    onClick={() => removeItem(product.productId)}
+                                                    className='text-red-600 hover:text-red-800 font-medium mt-5'
+                                                >
+                                                    Remove Item
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
 
-                            {arr.map((_, i) => (
-                                <div
-                                    key={i}
-                                    className='flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-4 last:border-0'
-                                >
-                                    {/* <img
-                                        src={`/products/${product.images[0]}`}
-                                        width={120}
-                                        height={120}
-                                        alt={product.title}
-                                        className='object-cover rounded-lg mr-6'
-                                    /> */}
+                            <div className='bg-white rounded-xl shadow-xl p-4 sm:p-7 h-fit'>
+                                <h2 className='text-xl sm:text-2xl font-bold mb-6'>Order Summary</h2>
 
-                                    <div className='flex-grow'>
-                                        <h3 className='text-lg font-medium'>Producto</h3>
-                                        <p className='text-gray-600 mb-2'>$100</p>
-                                        {/*  <QuantitySelector quantity={3} /> */}
-
-                                        <button className='text-red-600 hover:text-red-800 font-medium mt-3'>
-                                            Remove Item
-                                        </button>
+                                <div className='space-y-4'>
+                                    <div className='flex justify-between text-gray-600'>
+                                        <span>Items ({getTotalItems()})</span>
+                                        <span>{usdFormatter.format(getTotalAmount() / 100)}</span>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
 
-                    {/* Order Summary */}
-                    <div className='bg-white rounded-xl shadow-xl p-4 sm:p-7 h-fit'>
-                        <h2 className='text-xl sm:text-2xl font-bold mb-6'>Order Summary</h2>
+                                    <div className='flex justify-between text-gray-600'>
+                                        <span>Subtotal</span>
+                                        <span>{usdFormatter.format(getTotalAmount() / 100)}</span>
+                                    </div>
 
-                        <div className='space-y-4'>
-                            <div className='flex justify-between text-gray-600'>
-                                <span>Items (3)</span>
-                                <span>$100.00</span>
-                            </div>
+                                    <div className='border-t border-gray-200 pt-4 mt-4'>
+                                        <div className='flex justify-between font-bold text-lg sm:text-xl'>
+                                            <span>Total</span>
+                                            <span>{usdFormatter.format(getTotalAmount() / 100)}</span>
+                                        </div>
+                                    </div>
 
-                            <div className='flex justify-between text-gray-600'>
-                                <span>Subtotal</span>
-                                <span>$100.00</span>
-                            </div>
-
-                            <div className='flex justify-between text-gray-600'>
-                                <span>Tax (15%)</span>
-                                <span>$15.00</span>
-                            </div>
-
-                            <div className='border-t border-gray-200 pt-4 mt-4'>
-                                <div className='flex justify-between font-bold text-lg sm:text-xl'>
-                                    <span>Total</span>
-                                    <span>$115.00</span>
+                                    <button className='w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mt-6'>
+                                        Proceed to Checkout
+                                    </button>
                                 </div>
                             </div>
-
-                            <button className='w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mt-6'>
-                                Proceed to Checkout
-                            </button>
                         </div>
-                    </div>
-                </div>
+                    </>
+                )}
             </div>
         </div>
     );
