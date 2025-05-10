@@ -21,6 +21,7 @@ model Product {
   description String
   images      ProductImage[]
   price       Int
+  rating      Float @default(4.0)
   stock       Int
   slug        String        @unique
   orderItems  OrderDetail[]

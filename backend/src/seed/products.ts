@@ -5,6 +5,7 @@ type Product = {
     stock: number;
     price: number;
     slug: string;
+    rating: number;
 };
 
 export const products: Product[] = [
@@ -19,6 +20,7 @@ export const products: Product[] = [
         stock: 7,
         price: 7500,
         slug: 'sony-wh-ch510-wireless-headphones-black',
+        rating: 4.2,
     },
     {
         name: 'Aukey EP-T21 True Wireless Earbuds - Black',
@@ -31,6 +33,7 @@ export const products: Product[] = [
         stock: 5,
         price: 3500,
         slug: 'aukey-ep-t21-true-wireless-earbuds-black',
+        rating: 3.9,
     },
     {
         name: 'Apple MacBook Air M2 - 13.6” - Silver',
@@ -43,6 +46,7 @@ export const products: Product[] = [
         stock: 5,
         price: 119900,
         slug: 'apple-macbook-air-m2-13-silver',
+        rating: 4.8,
     },
     {
         name: 'Apple iPhone 13 - 128GB - Midnight',
@@ -55,6 +59,7 @@ export const products: Product[] = [
         stock: 5,
         price: 79900,
         slug: 'apple-iphone-13-128gb-midnight',
+        rating: 4.7,
     },
     {
         name: 'Logitech MK270 Wireless Keyboard and Mouse Combo',
@@ -67,6 +72,7 @@ export const products: Product[] = [
         stock: 5,
         price: 4500,
         slug: 'logitech-mk270-wireless-keyboard-mouse-combo',
+        rating: 4.0,
     },
     {
         name: 'Samsung Galaxy S21 Ultra 5G - 128GB - Phantom Black',
@@ -79,6 +85,7 @@ export const products: Product[] = [
         stock: 5,
         price: 99900,
         slug: 'samsung-galaxy-s21-ultra-5g-phantom-black',
+        rating: 4.6,
     },
     {
         name: 'FIFINE K669B USB Condenser Microphone - Black',
@@ -91,6 +98,7 @@ export const products: Product[] = [
         stock: 5,
         price: 4900,
         slug: 'fifine-k669b-usb-condenser-microphone-black',
+        rating: 4.3,
     },
     {
         name: 'Lenovo IdeaPad 3 Laptop 15.6" - AMD Ryzen 5, 8GB RAM, 256GB SSD',
@@ -103,6 +111,7 @@ export const products: Product[] = [
         stock: 5,
         price: 44900,
         slug: 'lenovo-ideapad-3-ryzen5-256gb',
+        rating: 4.4,
     },
     {
         name: 'Xiaomi Redmi Note 10 Pro - 128GB, 6GB RAM, AMOLED Display',
@@ -115,6 +124,7 @@ export const products: Product[] = [
         stock: 5,
         price: 27900,
         slug: 'xiaomi-redmi-note-10-pro-128gb',
+        rating: 4.5,
     },
     {
         name: 'Logitech MX Vertical Wireless Ergonomic Mouse',
@@ -127,5 +137,6 @@ export const products: Product[] = [
         stock: 5,
         price: 9900,
         slug: 'logitech-mx-vertical-ergonomic-mouse',
+        rating: 4.1,
     },
 ];
