@@ -13,7 +13,7 @@ function App() {
 
     const handleCheckout = async () => {
         try {
-          const response = await fetch('http://localhost:3000/create-checkout-session', {
+          const response = await fetch('http://localhost:3000/orders/create-checkout-session', {
             method: 'POST',
           });
           console.log({response})
