@@ -1,13 +1,9 @@
+import { usdFormatter } from '../../../helpers/usd-formatter';
 import type { Product } from '../interfaces/product.interfaces';
 
 type Props = {
     product: Product;
 };
-
-const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-});
 
 export const Card = ({ product }: Props) => {
     const filledStars = Math.floor(product.rating);
@@ -37,7 +33,7 @@ export const Card = ({ product }: Props) => {
                     <div className='flex items-center justify-between'>
                         <div className='flex flex-col'>
                             <span className='text-2xl font-bold text-gray-900'>
-                                {formatter.format(product.price / 100)}
+                                {usdFormatter.format(product.price / 100)}
                             </span>
                         </div>
                         <div className='flex items-center text-sm text-yellow-500'>

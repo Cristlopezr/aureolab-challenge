@@ -9,6 +9,8 @@ export const CartPage = () => {
             <div className='flex flex-col'>
                 <PageTitle title='Shopping Cart' />
 
+                <EmptyCart />
+
                 <span className='text-xl font-medium mb-4'>Your Items</span>
                 <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-10'>
                     <div className='flex flex-col'>
@@ -80,6 +82,39 @@ export const CartPage = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    );
+};
+
+const EmptyCart = () => {
+    return (
+        <div className='bg-white rounded-xl shadow-md p-4 sm:p-6 mb-5'>
+            <div className='flex flex-col items-center justify-center py-12'>
+                <svg
+                    className='w-16 h-16 text-gray-400 mb-4'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                    xmlns='http://www.w3.org/2000/svg'
+                >
+                    <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
+                    />
+                </svg>
+                <h3 className='text-xl font-medium text-gray-900 mb-2'>Your cart is empty</h3>
+                <p className='text-gray-500 text-center mb-6'>
+                    Looks like you haven't added any items to your cart yet.
+                </p>
+                <Link
+                    to='/'
+                    className='bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors duration-200'
+                >
+                    Start Shopping
+                </Link>
             </div>
         </div>
     );
