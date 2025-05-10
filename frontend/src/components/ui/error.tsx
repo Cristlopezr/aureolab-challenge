@@ -20,7 +20,7 @@ export const Error = () => {
                 </div>
                 <h2 className='text-2xl font-bold text-gray-800 mb-2'>Oops! Something went wrong</h2>
                 <p className='text-gray-600'>
-                    We were unable to load the resources at the moment. Please try refreshing the page or check back
+                    We were unable to load the resource at the moment. Please try refreshing the page or check back
                     later.
                 </p>
             </div>

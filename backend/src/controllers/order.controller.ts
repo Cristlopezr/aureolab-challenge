@@ -7,9 +7,46 @@ interface CartItem {
     quantity: number;
 }
 
+export const getOrderDetails = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    try {
+        const orderDetails = await prisma.order.findFirst({
+            where: {
+                id,
+            },
+            include: {
+                orderItems: {
+                    include: {
+                        product: {
+                            include: {
+                                images: true,
+                            },
+                        },
+                    },
+                },
+                refunds: true,
+            },
+        });
+
+        if (!orderDetails) {
+            res.status(404).json({
+                message: 'Order not found',
+            });
+            return;
+        }
+
+        res.status(200).json(orderDetails);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: 'Something went wrong',
+        });
+    }
+};
+
 export const getOrders = async (req: Request, res: Response) => {
     try {
-        const orders = await prisma.order.findMany({ include: { orderItems: true, refunds: true } });
+        const orders = await prisma.order.findMany();
         res.status(200).json(orders);
     } catch (error) {
         res.status(500).json({

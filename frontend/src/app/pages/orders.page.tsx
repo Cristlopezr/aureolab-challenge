@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import { PageTitle } from '../../components/ui/page-title';
-import useGetOrders from '../../features/orders/hooks/orders';
+import { useGetOrders } from '../../features/orders/hooks/orders';
 import { capitalizeFirstLetter } from '../../helpers/capitalize-first-letter';
 import { usdFormatter } from '../../helpers/usd-formatter';
 import { Error } from '../../components/ui/error';
 import { PendingState } from '../../components/ui/pending-state';
+import { formatLongDate } from '../../helpers/date-formatter';
 
 export const OrdersPage = () => {
     const { isError, data, isPending } = useGetOrders();
@@ -71,7 +72,7 @@ export const OrdersPage = () => {
                                 {data?.map(order => (
                                     <tr key={order.id}>
                                         <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                                            March 1, 2025
+                                            {formatLongDate(order.createdAt)}
                                         </td>
                                         <td className='px-6 py-4 whitespace-nowrap'>
                                             {order.status === 'PAID' ? (

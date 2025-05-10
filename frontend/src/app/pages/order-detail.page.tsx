@@ -1,54 +1,107 @@
+import { useNavigate, useParams } from 'react-router-dom';
 import { PageTitle } from '../../components/ui/page-title';
+import { useEffect } from 'react';
+import { useGetOrderDetail } from '../../features/orders/hooks/orders';
+import { Error } from '../../components/ui/error';
+import { PendingState } from '../../components/ui/pending-state';
+import { capitalizeFirstLetter } from '../../helpers/capitalize-first-letter';
+import { formatFullDate } from '../../helpers/date-formatter';
+import { usdFormatter } from '../../helpers/usd-formatter';
 
 export const OrderDetailPage = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!id) {
+            navigate('/');
+        }
+    }, [id]);
+
+    if (!id) {
+        return null;
+    }
+
+    const { isError, data: order, isPending } = useGetOrderDetail(id);
+
+    const totalItems = order?.orderItems.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
+
+    if (isError) return <Error />;
+
+    if (isPending) return <PendingState text='Loading order details' />;
+
     return (
         <div className=''>
             <div className=''>
-                <PageTitle title={`Order #${123}`} />
+                <PageTitle title={`Order ${order!.id.slice(-6)}`} />
 
                 <div className='mt-8 space-y-8'>
                     {/* Order Status */}
                     <div className='bg-white rounded-lg shadow p-6'>
                         <div className='flex items-center'>
-                            <div className='h-3 w-3 rounded-full bg-green-500 mr-2'></div>
-                            <span className='font-medium text-green-700'>Order Paid & Confirmed</span>
+                            {order?.status === 'PAID' ? (
+                                <>
+                                    <div className='h-3 w-3 rounded-full bg-green-500 mr-2'></div>
+                                    <span className='font-medium text-green-700'>
+                                        {capitalizeFirstLetter(order.status)}
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <div className='h-3 w-3 rounded-full bg-red-500 mr-2'></div>
+                                    <span className='font-medium text-red-700'>
+                                        {capitalizeFirstLetter(order!.status)}
+                                    </span>
+                                </>
+                            )}
                         </div>
                         <div className='mt-4 flex items-center space-x-2 text-sm text-gray-500'>
-                            <span className='font-medium'>March 15, 2024</span>
+                            <span className='font-medium'>{formatFullDate(order!.createdAt)}</span>
                         </div>
+                        {order?.customerName && order?.customerEmail && (
+                            <div className='mt-4 text-sm text-gray-500'>
+                                <p className='font-medium text-gray-700'>Customer: {order.customerName}</p>
+                                <p>Email: {order.customerEmail}</p>
+                            </div>
+                        )}
                     </div>
 
-                    {/* Order Items */}
                     <div className='bg-white rounded-lg shadow overflow-hidden'>
                         <div className='p-6'>
                             <h2 className='text-lg font-medium text-gray-900 mb-4'>Order Items</h2>
                             <div className='space-y-4'>
-                                {/* Sample Item - Replace with actual items mapping */}
-                                <div className='flex items-center border-b pb-4'>
-                                    <div className='h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200'>
-                                        <img
-                                            src='/placeholder-product.jpg'
-                                            alt='Product'
-                                            className='h-full w-full object-cover object-center'
-                                        />
-                                    </div>
-                                    <div className='ml-4 flex flex-1 flex-col'>
-                                        <div>
-                                            <div className='flex justify-between text-base font-medium text-gray-900'>
-                                                <h3>Product Name</h3>
-                                                <p className='ml-4'>$100.00</p>
+                                {order?.orderItems.map(item => (
+                                    <div key={item.product.id} className='flex items-center border-b pb-4'>
+                                        <div className='h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200'>
+                                            <img
+                                                src={`${item.product.images[0].url}?w=150`}
+                                                alt='Product'
+                                                className='h-full w-full aspect-square object-cover object-center'
+                                            />
+                                        </div>
+                                        <div className='ml-4 flex flex-1 flex-col'>
+                                            <div>
+                                                <div className='flex justify-between text-base font-medium text-gray-900'>
+                                                    <h3>{item.product.name}</h3>
+                                                    <p className='ml-4'>
+                                                        {usdFormatter.format(
+                                                            (item.product.price * item.quantity) / 100
+                                                        )}
+                                                    </p>
+                                                </div>
+                                                <p className='mt-1 text-sm text-gray-500'>
+                                                    {usdFormatter.format(item.product.price / 100)} x {item.quantity}
+                                                </p>
                                             </div>
-                                            <p className='mt-1 text-sm text-gray-500'>Quantity: 3</p>
                                         </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </div>
 
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-                        {/* Shipping Information */}
-                        <div className='bg-white rounded-lg shadow p-6'>
+                        {/*  <div className='bg-white rounded-lg shadow p-6'>
                             <h2 className='text-lg font-medium text-gray-900 mb-4'>Shipping Address</h2>
                             <div className='text-sm text-gray-500 space-y-2'>
                                 <p className='text-base font-medium text-gray-900'>John Doe</p>
@@ -58,28 +111,20 @@ export const OrderDetailPage = () => {
                                 <p>United States</p>
                                 <p>Phone: (555) 123-4567</p>
                             </div>
-                        </div>
+                        </div> */}
 
                         {/* Order Summary */}
                         <div className='bg-white rounded-lg shadow p-6'>
                             <h2 className='text-lg font-medium text-gray-900 mb-4'>Order Summary</h2>
                             <div className='space-y-3'>
                                 <div className='flex justify-between text-sm'>
-                                    <span>Items (3)</span>
-                                    <span>$300.00</span>
-                                </div>
-                                <div className='flex justify-between text-sm'>
-                                    <span>Shipping</span>
-                                    <span>$10.00</span>
-                                </div>
-                                <div className='flex justify-between text-sm'>
-                                    <span>Tax</span>
-                                    <span>$31.00</span>
+                                    <span>Items ({totalItems})</span>
+                                    <span>{usdFormatter.format(order?.amount ? order.amount / 100 : 0)}</span>
                                 </div>
                                 <div className='border-t pt-3 mt-3'>
                                     <div className='flex justify-between text-lg font-medium'>
                                         <span>Total</span>
-                                        <span>$341.00</span>
+                                        <span>{usdFormatter.format(order!.amount / 100)}</span>
                                     </div>
                                 </div>
                             </div>
