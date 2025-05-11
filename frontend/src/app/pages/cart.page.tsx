@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { PageTitle } from '../../components/ui/page-title';
 import { useCartStore } from '../../store/cart-store';
 import { usdFormatter } from '../../helpers/usd-formatter';
-import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
+import { HiMinusCircle, HiOutlineRefresh, HiPlusCircle } from 'react-icons/hi';
 import useHandleCheckout from '../../features/cart/hooks/cart';
 
 export const CartPage = () => {
@@ -12,7 +12,7 @@ export const CartPage = () => {
     const removeItem = useCartStore(state => state.removeItemCompletely);
     const getTotalItems = useCartStore(state => state.getTotalItems);
     const getTotalAmount = useCartStore(state => state.getTotalAmount);
-    const { mutate: handleCheckout } = useHandleCheckout();
+    const { mutate: handleCheckout, isPending } = useHandleCheckout();
 
     return (
         <div className='w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'>
@@ -95,10 +95,18 @@ export const CartPage = () => {
                                     </div>
 
                                     <button
+                                        disabled={isPending}
                                         onClick={() => handleCheckout(productsInCart)}
-                                        className='w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mt-6'
+                                        className='w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mt-6 disabled:opacity-50 disabled:cursor-not-allowed'
                                     >
-                                        Proceed to Checkout
+                                        {isPending ? (
+                                            <span className='flex items-center justify-center gap-2'>
+                                                <HiOutlineRefresh className='animate-spin' size={20} />
+                                                Processing...
+                                            </span>
+                                        ) : (
+                                            'Proceed to Checkout'
+                                        )}
                                     </button>
                                 </div>
                             </div>

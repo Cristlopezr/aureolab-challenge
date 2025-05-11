@@ -5,7 +5,6 @@ import { AppRouter } from './router/app-router';
 import { HiShoppingCart } from 'react-icons/hi';
 
 function App() {
-    console.log('Aqui');
     return (
         <>
             <LoadCartFromLocalStorage />

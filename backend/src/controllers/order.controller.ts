@@ -50,7 +50,9 @@ export const getOrders = async (req: Request, res: Response) => {
     try {
         const orders = await prisma.order.findMany({
             where: {
-                status: 'PAID',
+                status: {
+                    in: ['PAID', 'FAILED'],
+                },
             },
         });
         res.status(200).json(orders);

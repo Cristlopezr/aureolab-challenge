@@ -26,7 +26,7 @@ export const OrderDetailPage = () => {
     }
 
     const { isError, data: order, isPending } = useGetOrderDetail(id);
-    const { mutate: handleRefund, isPending: isRefundPeding } = useOrderRefund();
+    const { mutate: handleRefund, isPending: isRefundPending } = useOrderRefund();
     const openPartialRefund = useUiStore(state => state.openPartialRefund);
     const openFullRefund = useUiStore(state => state.openFullRefund);
 
@@ -43,10 +43,10 @@ export const OrderDetailPage = () => {
             <PartialRefundDialog
                 handleRefund={handleRefund}
                 orderId={order!.id}
-                isRefundPeding={isRefundPeding}
+                isRefundPending={isRefundPending}
                 maxRefund={maxRefund}
             />
-            <FullRefundDialog handleRefund={handleRefund} orderId={order!.id} isRefundPeding={isRefundPeding} />
+            <FullRefundDialog handleRefund={handleRefund} orderId={order!.id} isRefundPending={isRefundPending} />
             <button
                 onClick={() => navigate(-1)}
                 className='inline-flex items-center pb-2 gap-1 text-sm font-medium text-gray-700 hover:text-gray-900'

@@ -63,8 +63,9 @@ https://github.com/Cristlopezr/aureolab-challenge.git
      - `failed` if the transaction failed.
 
 1.5 **Order Management**:
-   - After the payment process, the user can see their paid orders in the "My Orders" section.
-   - If needed, the user can request a full or partial **refund** via the orders details page.
+   - After the payment process, users will be able to view all their orders—both successful and failed—in the "My Orders" section.
+   - If the payment was successful, the order will appear with a "PAID" status; if it failed, it will show as "FAILED".
+   - If needed, users can request a full or partial refund via the order details page, available only for orders marked as "PAID".
 
 ### 2. PostgreSQL Database Integration
 2.1 **PostgreSQL, Docker, and Prisma**:  
