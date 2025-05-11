@@ -59,12 +59,37 @@ export const OrderDetailPage = () => {
                             <span className='font-medium'>{formatFullDate(order!.createdAt)}</span>
                         </div>
                         {order?.customerName && order?.customerEmail && (
-                            <div className='mt-4 text-sm text-gray-500'>
-                                <p className='font-medium text-gray-700'>Customer: {order.customerName}</p>
+                            <div className='mt-4 text-sm text-gray-700'>
+                                <p className='font-medium'>Customer: {order.customerName}</p>
                                 <p>Email: {order.customerEmail}</p>
                             </div>
                         )}
                     </div>
+
+                    {order!.totalRefunded > 0 && (
+                        <div className='bg-white rounded-lg shadow p-6'>
+                            <h2 className='text-lg font-medium text-gray-900 mb-4'>Refund Information</h2>
+                            <div className='space-y-3'>
+                                <div className='flex items-center'>
+                                    <div className='h-3 w-3 rounded-full bg-yellow-500 mr-2'></div>
+                                    <span className='font-medium text-yellow-700'>
+                                        {order!.totalRefunded === order!.amount
+                                            ? 'Fully Refunded'
+                                            : 'Partially Refunded'}
+                                    </span>
+                                </div>
+                                <div className='text-sm text-gray-500'>
+                                    <p>Refunded Amount: {usdFormatter.format(order!.totalRefunded / 100)}</p>
+                                    {order!.totalRefunded !== order!.amount && (
+                                        <p className='mt-1'>
+                                            Remaining Amount:{' '}
+                                            {usdFormatter.format((order!.amount - order!.totalRefunded) / 100)}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className='bg-white rounded-lg shadow overflow-hidden'>
                         <div className='p-6'>
@@ -131,14 +156,16 @@ export const OrderDetailPage = () => {
                         </div>
                     </div>
 
-                    <div className='flex justify-end space-x-4'>
-                        <button className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'>
-                            Partial refund
-                        </button>
-                        <button className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'>
-                            Total refund
-                        </button>
-                    </div>
+                    {order?.status === 'PAID' && order.totalRefunded < order.amount && (
+                        <div className='flex justify-end space-x-4'>
+                            <button className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'>
+                                Partial refund
+                            </button>
+                            <button className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'>
+                                Total refund
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

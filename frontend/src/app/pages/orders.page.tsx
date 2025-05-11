@@ -76,13 +76,26 @@ export const OrdersPage = () => {
                                         </td>
                                         <td className='px-6 py-4 whitespace-nowrap'>
                                             {order.status === 'PAID' ? (
-                                                <span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800'>
-                                                    {capitalizeFirstLetter(order.status)}
-                                                </span>
+                                                <div className='flex items-center gap-2'>
+                                                    <span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800'>
+                                                        {capitalizeFirstLetter(order.status)}
+                                                    </span>
+                                                    {order.totalRefunded > 0 ? (
+                                                        order.totalRefunded === order.amount ? (
+                                                            <span className='text-sm font-semibold'>Fully refunded</span>
+                                                        ) : (
+                                                            <span className='text-sm font-semibold'>
+                                                                Partially refunded
+                                                            </span>
+                                                        )
+                                                    ) : null}
+                                                </div>
                                             ) : (
-                                                <span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800'>
-                                                    {capitalizeFirstLetter(order.status)}
-                                                </span>
+                                                <>
+                                                    <span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800'>
+                                                        {capitalizeFirstLetter(order.status)}
+                                                    </span>
+                                                </>
                                             )}
                                         </td>
                                         <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
