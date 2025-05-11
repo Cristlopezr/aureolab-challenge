@@ -3,6 +3,7 @@ import { PageTitle } from '../../components/ui/page-title';
 import { useCartStore } from '../../store/cart-store';
 import { usdFormatter } from '../../helpers/usd-formatter';
 import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
+import useHandleCheckout from '../../features/cart/hooks/cart';
 
 export const CartPage = () => {
     const productsInCart = useCartStore(state => state.items);
@@ -11,6 +12,7 @@ export const CartPage = () => {
     const removeItem = useCartStore(state => state.removeItemCompletely);
     const getTotalItems = useCartStore(state => state.getTotalItems);
     const getTotalAmount = useCartStore(state => state.getTotalAmount);
+    const { mutate: handleCheckout } = useHandleCheckout();
 
     return (
         <div className='w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'>
@@ -92,7 +94,10 @@ export const CartPage = () => {
                                         </div>
                                     </div>
 
-                                    <button className='w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mt-6'>
+                                    <button
+                                        onClick={() => handleCheckout(productsInCart)}
+                                        className='w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mt-6'
+                                    >
                                         Proceed to Checkout
                                     </button>
                                 </div>

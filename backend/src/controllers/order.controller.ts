@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma-client';
 import { stripe } from '../lib/stripe';
+import { envs } from '../config/envs';
 
 interface CartItem {
-    id: string;
+    productId: string;
     quantity: number;
 }
 
@@ -58,7 +59,7 @@ export const getOrders = async (req: Request, res: Response) => {
 export const createCheckoutSession = async (req: Request, res: Response) => {
     const cart: CartItem[] = req.body.cart;
 
-    const productIds = cart.map(item => item.id);
+    const productIds = cart.map(item => item.productId);
 
     try {
         const products = await prisma.product.findMany({
@@ -78,7 +79,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
         let totalAmount = 0;
 
         const line_items = cart.map(item => {
-            const product = products.find(p => p.id === item.id);
+            const product = products.find(p => p.id === item.productId);
             if (!product) throw new Error('Product not found.');
 
             const productImage = product.images[0]?.url || '';
@@ -103,8 +104,8 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
             payment_method_types: ['card'],
             line_items,
             mode: 'payment',
-            success_url: 'http://localhost:5173',
-            cancel_url: 'http://localhost:5173',
+            success_url: `${envs.APP_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: envs.APP_URL,
         });
 
         await prisma.order.create({
@@ -116,7 +117,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
                 orderItems: {
                     create: cart.map(item => ({
                         quantity: item.quantity,
-                        product: { connect: { id: item.id } },
+                        product: { connect: { id: item.productId } },
                     })),
                 },
             },

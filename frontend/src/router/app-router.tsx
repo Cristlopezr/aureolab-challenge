@@ -4,6 +4,7 @@ import { CartPage } from '../app/pages/cart.page';
 import { OrdersPage } from '../app/pages/orders.page';
 import { AppLayout } from '../layout/app-layout';
 import { OrderDetailPage } from '../app/pages/order-detail.page';
+import SuccessPage from '../app/pages/success.page';
 
 export const AppRouter = () => {
     return (
@@ -13,6 +14,7 @@ export const AppRouter = () => {
                 <Route path='/orders/:id' element={<OrderDetailPage />} />
                 <Route path='/cart' element={<CartPage />} />
                 <Route path='/orders' element={<OrdersPage />} />
+                <Route path='/success' element={<SuccessPage />} />
             </Route>
         </Routes>
     );
