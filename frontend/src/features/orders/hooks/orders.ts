@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import eShopApi from '../../../api/eShop-api';
 import type { Order, OrderWithDetails } from '../interfaces/order';
 
@@ -35,5 +35,22 @@ const getOrderDetail = async (id: string) => {
         return data;
     } catch (error) {
         console.log(error);
+    }
+};
+
+export default function useOrderRefund() {
+    return useMutation({
+        mutationFn: async (orderId: string, amount?: string) => await handleRefund(orderId, amount),
+    });
+}
+
+const handleRefund = async (orderId: string, amount?: string) => {
+    try {
+        const { data } = await eShopApi.post('/orders/refund', {
+            orderId,
+            amount,
+        });
+    } catch (error) {
+        console.error('Error al crear sesión de pago:', error);
     }
 };

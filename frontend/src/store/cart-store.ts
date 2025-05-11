@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import type { CartItem } from '../features/cart/interfaces/cart';
+import { toast } from 'react-toastify';
+import { HiShoppingCart } from 'react-icons/hi';
 
 const CART_STORAGE_KEY = 'cart';
 
@@ -38,6 +40,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
                 );
             } else {
                 updatedItems = [...state.items, { ...item, quantity: 1 }];
+                toast.success('Added to cart');
             }
 
             saveToLocalStorage(updatedItems);

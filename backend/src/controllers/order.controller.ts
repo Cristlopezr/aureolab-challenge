@@ -133,15 +133,22 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
 export const createRefund = async (req: Request, res: Response) => {
     const { orderId, amount } = req.body;
-
     if (!orderId || typeof orderId !== 'string') {
         res.status(400).json({ error: 'orderId is required and must be a string' });
         return;
     }
 
-    if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
-        res.status(400).json({ error: 'amount must be a valid number greater than 0' });
-        return;
+    let amountInCents: number | undefined = undefined;
+
+    if (amount) {
+        const numberAmount = Number(amount);
+
+        if (Number.isNaN(numberAmount) || numberAmount <= 0) {
+            res.status(400).json({ error: 'amount must be a valid number greater than 0' });
+            return;
+        }
+
+        amountInCents = numberAmount * 100;
     }
 
     try {
@@ -151,13 +158,17 @@ export const createRefund = async (req: Request, res: Response) => {
             return;
         }
 
-        /* const paymentIntent = await stripe.paymentIntents.retrieve(order.stripePaymentIntentId!);
-        const chargeId = paymentIntent.charges.data[0].id; */
+        const remainingAmountToRefund = order.amount - order.totalRefunded;
+
+        if (amountInCents && amountInCents > remainingAmountToRefund) {
+            res.status(400).json({ error: 'Refund amount exceeds the remaining balance to refund' });
+            return;
+        }
 
         const refund = await stripe.refunds.create({
             payment_intent: order.stripePaymentIntentId!,
             reason: 'requested_by_customer',
-            ...(amount ? { amount } : {}), // Si no se pasa amount, será total
+            ...(amountInCents ? { amount: amountInCents } : {}),
         });
 
         await prisma.refund.create({
@@ -181,10 +192,10 @@ export const createRefund = async (req: Request, res: Response) => {
             },
         });
 
-        res.json({ message: 'Reembolso creado' });
+        res.json({ message: 'Refund processed successfully' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al procesar el reembolso' });
+        res.status(500).json({ error: 'An error occurred while processing the refund' });
     }
 };
 
