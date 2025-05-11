@@ -132,24 +132,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 };
 
 export const createRefund = async (req: Request, res: Response) => {
-    const { orderId, amount } = req.body;
-    if (!orderId || typeof orderId !== 'string') {
-        res.status(400).json({ error: 'orderId is required and must be a string' });
-        return;
-    }
-
-    let amountInCents: number | undefined = undefined;
-
-    if (amount) {
-        const numberAmount = Number(amount);
-
-        if (Number.isNaN(numberAmount) || numberAmount <= 0) {
-            res.status(400).json({ error: 'amount must be a valid number greater than 0' });
-            return;
-        }
-
-        amountInCents = numberAmount * 100;
-    }
+    const { orderId, amountInCents } = req.body;
 
     try {
         const order = await getOrderById(orderId);
@@ -192,10 +175,10 @@ export const createRefund = async (req: Request, res: Response) => {
             },
         });
 
-        res.json({ message: 'Refund processed successfully' });
+        res.status(200).json({ message: 'Refund processed successfully' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'An error occurred while processing the refund' });
+        res.status(500).json({ error: `An error occurred while processing the refund: ${error}` });
     }
 };
 

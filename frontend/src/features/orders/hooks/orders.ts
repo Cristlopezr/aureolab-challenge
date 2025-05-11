@@ -19,6 +19,7 @@ const getOrders = async () => {
         return data;
     } catch (error) {
         console.log(error);
+        throw new Error('An error ocurred while getting the orders');
     }
 };
 
@@ -37,6 +38,7 @@ const getOrderDetail = async (id: string) => {
         return data;
     } catch (error) {
         console.log(error);
+        throw new Error('An error ocurred while getting the order details');
     }
 };
 
@@ -70,5 +72,6 @@ const handleRefund = async ({ orderId, amount }: { orderId: string; amount?: str
         return data;
     } catch (error) {
         console.error('Error requesting refund', error);
+        throw new Error('Error requesting refund');
     }
 };

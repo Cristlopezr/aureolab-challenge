@@ -17,5 +17,6 @@ const handleCheckout = async (cart: CartItem[]) => {
         window.location.href = data.url;
     } catch (error) {
         console.error('Error al crear sesión de pago:', error);
+        throw new Error('Unable to start the checkout process. Please try again later.');
     }
 };

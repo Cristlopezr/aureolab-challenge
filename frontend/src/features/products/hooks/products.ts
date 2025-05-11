@@ -16,6 +16,6 @@ const getProducts = async () => {
         const { data } = await eShopApi.get<Product[]>('/products');
         return data;
     } catch (error) {
-        console.log(error);
+        throw new Error('Unable to load the products. Please try again later.');
     }
 };

@@ -5,14 +5,11 @@ import { AppRouter } from './router/app-router';
 import { HiShoppingCart } from 'react-icons/hi';
 
 function App() {
+    console.log('Aqui');
     return (
         <>
             <LoadCartFromLocalStorage />
-            <ToastContainer
-                position='top-right'
-                autoClose={2000}
-                icon={() => <HiShoppingCart size={30} className='text-green-500' />}
-            />
+            <ToastContainer position='top-right' autoClose={2000} icon={() => <HiShoppingCart size={30} />} />
             <AppRouter />
         </>
     );
