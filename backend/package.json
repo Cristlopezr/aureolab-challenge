@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "tsx --watch src/index.ts",
         "start": "node ./dist/index.js",
-        "build": "rimraf ./dist && prisma generate && tsc",
+        "build": "rimraf ./dist && prisma generate --no-egine && tsc",
         "db:push": "prisma db push",
         "seed": "ts-node src/seed/seed.ts",
         "db:migrate": "prisma migrate dev",
