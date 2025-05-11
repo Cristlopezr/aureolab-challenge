@@ -1,6 +1,8 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import eShopApi from '../../../api/eShop-api';
 import type { Order, OrderWithDetails } from '../interfaces/order';
+import { toast } from 'react-toastify';
+import { useUiStore } from '../../../store/ui-store';
 
 export const useGetOrders = () => {
     const query = useQuery({
@@ -39,18 +41,34 @@ const getOrderDetail = async (id: string) => {
 };
 
 export default function useOrderRefund() {
+    const queryClient = useQueryClient();
+    const closeFullRefund = useUiStore(state => state.closeFullRefund);
+    const closePartialRefund = useUiStore(state => state.closePartialRefund);
     return useMutation({
-        mutationFn: async (orderId: string, amount?: string) => await handleRefund(orderId, amount),
+        mutationFn: async ({ orderId, amount }: { orderId: string; amount?: string }) =>
+            await handleRefund({ orderId, amount }),
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['orderDetail', variables.orderId] });
+            toast.success('Refund processed successfully');
+        },
+        onError: () => {
+            toast.error('An error occurred while processing the refund');
+        },
+        onSettled: () => {
+            closeFullRefund();
+            closePartialRefund();
+        },
     });
 }
 
-const handleRefund = async (orderId: string, amount?: string) => {
+const handleRefund = async ({ orderId, amount }: { orderId: string; amount?: string }) => {
     try {
         const { data } = await eShopApi.post('/orders/refund', {
             orderId,
             amount,
         });
+        return data;
     } catch (error) {
-        console.error('Error al crear sesión de pago:', error);
+        console.error('Error requesting refund', error);
     }
 };

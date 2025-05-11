@@ -8,6 +8,8 @@ import { capitalizeFirstLetter } from '../../helpers/capitalize-first-letter';
 import { formatFullDate } from '../../helpers/date-formatter';
 import { usdFormatter } from '../../helpers/usd-formatter';
 import { HiArrowLeft } from 'react-icons/hi';
+import { FullRefundDialog, PartialRefundDialog } from '../../features/orders/components/refund-dialog';
+import { useUiStore } from '../../store/ui-store';
 
 export const OrderDetailPage = () => {
     const { id } = useParams();
@@ -25,6 +27,8 @@ export const OrderDetailPage = () => {
 
     const { isError, data: order, isPending } = useGetOrderDetail(id);
     const { mutate: handleRefund, isPending: isRefundPeding } = useOrderRefund();
+    const openPartialRefund = useUiStore(state => state.openPartialRefund);
+    const openFullRefund = useUiStore(state => state.openFullRefund);
 
     const totalItems = order?.orderItems.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
@@ -34,6 +38,8 @@ export const OrderDetailPage = () => {
 
     return (
         <div>
+            <PartialRefundDialog handleRefund={handleRefund} orderId={order!.id} isRefundPeding={isRefundPeding} />
+            <FullRefundDialog handleRefund={handleRefund} orderId={order!.id} isRefundPeding={isRefundPeding} />
             <button
                 onClick={() => navigate(-1)}
                 className='inline-flex items-center pb-2 gap-1 text-sm font-medium text-gray-700 hover:text-gray-900'
@@ -169,10 +175,16 @@ export const OrderDetailPage = () => {
 
                 {order?.status === 'PAID' && order.totalRefunded < order.amount && (
                     <div className='flex justify-end space-x-4'>
-                        <button className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'>
+                        <button
+                            onClick={openPartialRefund}
+                            className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'
+                        >
                             Refund Partially
                         </button>
-                        <button className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'>
+                        <button
+                            onClick={openFullRefund}
+                            className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'
+                        >
                             Refund Full Amount
                         </button>
                     </div>

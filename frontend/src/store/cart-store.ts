@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import type { CartItem } from '../features/cart/interfaces/cart';
 import { toast } from 'react-toastify';
-import { HiShoppingCart } from 'react-icons/hi';
 
 const CART_STORAGE_KEY = 'cart';
 
