@@ -170,7 +170,6 @@ export const createRefund = async (req: Request, res: Response) => {
             reason: 'requested_by_customer',
             ...(amountInCents ? { amount: amountInCents } : {}),
         });
-        console.log({ orderId, amount, amountInCents });
 
         await prisma.refund.create({
             data: {

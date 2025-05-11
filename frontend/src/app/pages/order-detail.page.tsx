@@ -30,15 +30,22 @@ export const OrderDetailPage = () => {
     const openPartialRefund = useUiStore(state => state.openPartialRefund);
     const openFullRefund = useUiStore(state => state.openFullRefund);
 
-    const totalItems = order?.orderItems.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
-
     if (isError) return <Error />;
 
     if (isPending) return <PendingState text='Loading order details' />;
 
+    const maxRefund = (Number(order!.amount) - Number(order!.totalRefunded)) / 100;
+
+    const totalItems = order?.orderItems.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
+
     return (
         <div>
-            <PartialRefundDialog handleRefund={handleRefund} orderId={order!.id} isRefundPeding={isRefundPeding} />
+            <PartialRefundDialog
+                handleRefund={handleRefund}
+                orderId={order!.id}
+                isRefundPeding={isRefundPeding}
+                maxRefund={maxRefund}
+            />
             <FullRefundDialog handleRefund={handleRefund} orderId={order!.id} isRefundPeding={isRefundPeding} />
             <button
                 onClick={() => navigate(-1)}

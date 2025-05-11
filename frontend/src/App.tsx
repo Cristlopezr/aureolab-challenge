@@ -10,7 +10,7 @@ function App() {
             <LoadCartFromLocalStorage />
             <ToastContainer
                 position='top-right'
-                autoClose={1500}
+                autoClose={2000}
                 icon={() => <HiShoppingCart size={30} className='text-green-500' />}
             />
             <AppRouter />
