@@ -53,7 +53,7 @@ export const Card = ({ product }: Props) => {
                                 productId: product.id,
                             })
                         }
-                        className='w-full bg-blue-600  hover:bg-blue-700 text-white px-6 py-3 rounded-lg  transition-all duration-200 font-semibold shadow-sm hover:shadow-md active:transform active:scale-95'
+                        className='w-full cursor-pointer bg-blue-600  hover:bg-blue-700 text-white px-6 py-3 rounded-lg  transition-all duration-200 font-semibold shadow-sm hover:shadow-md active:transform active:scale-95'
                     >
                         Add to Cart
                     </button>

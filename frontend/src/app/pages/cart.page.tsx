@@ -15,7 +15,7 @@ export const CartPage = () => {
     const { mutate: handleCheckout, isPending } = useHandleCheckout();
 
     return (
-        <div className='w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'>
+        <div className='w-full mx-auto'>
             <div className='flex flex-col'>
                 <PageTitle title='Shopping Cart' />
 
@@ -48,7 +48,10 @@ export const CartPage = () => {
                                                     {usdFormatter.format(product.price / 100)}
                                                 </p>
                                                 <div className='flex justify-center sm:justify-start'>
-                                                    <button onClick={() => decreseQuantity(product.productId)}>
+                                                    <button
+                                                        className='cursor-pointer'
+                                                        onClick={() => decreseQuantity(product.productId)}
+                                                    >
                                                         <HiMinusCircle size={30} />
                                                     </button>
 
@@ -56,14 +59,14 @@ export const CartPage = () => {
                                                         {product.quantity}
                                                     </span>
 
-                                                    <button onClick={() => addItem(product)}>
+                                                    <button className='cursor-pointer' onClick={() => addItem(product)}>
                                                         <HiPlusCircle size={30} />
                                                     </button>
                                                 </div>
 
                                                 <button
                                                     onClick={() => removeItem(product.productId)}
-                                                    className='text-red-600 hover:text-red-800 font-medium mt-5'
+                                                    className='cursor-pointer text-red-600 hover:text-red-800 font-medium mt-5'
                                                 >
                                                     Remove Item
                                                 </button>
@@ -97,7 +100,7 @@ export const CartPage = () => {
                                     <button
                                         disabled={isPending}
                                         onClick={() => handleCheckout(productsInCart)}
-                                        className='w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mt-6 disabled:opacity-50 disabled:cursor-not-allowed'
+                                        className='w-full cursor-pointer py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mt-6 disabled:opacity-50 disabled:cursor-not-allowed'
                                     >
                                         {isPending ? (
                                             <span className='flex items-center justify-center gap-2'>
@@ -142,7 +145,7 @@ const EmptyCart = () => {
                 </p>
                 <Link
                     to='/'
-                    className='bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors duration-200'
+                    className='bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200'
                 >
                     Start Shopping
                 </Link>

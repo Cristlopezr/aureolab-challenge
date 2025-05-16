@@ -14,7 +14,7 @@ https://github.com/Cristlopezr/aureolab-challenge.git
    - Repeat the same steps in the frontend directory.
 
 3. Install dependencies:
-   - Run ```npm install`` in both the frontend and backend directories.
+   - Run ```npm install``` in both the frontend and backend directories.
 
 4. Start the database 
    - In the backend directory, run ```docker compose up -d```
@@ -28,26 +28,26 @@ https://github.com/Cristlopezr/aureolab-challenge.git
 ## How to Use the Application (User Guide)
 
 1. Viewing Products
-    Navigate to the homepage of the app to view the list of available products.
+   - Navigate to the homepage of the app to view the list of available products.
 
 2. Adding Products to the Cart
-    Click the "Add to Cart" button for each product to add them to your shopping cart.
+   - Click the "Add to Cart" button for each product to add them to your shopping cart.
 
 3. Making a Payment
-    When you're ready to checkout, go to the cart and proceed to the Stripe payment page to complete your purchase.
+   - When you're ready to checkout, go to the cart and proceed to the Stripe payment page to complete your purchase.
 
 4. Viewing Orders
-    After a successful purchase, go to the "My Orders" page where you can see the details of your orders.
+   - After a successful purchase, go to the "My Orders" page where you can see the details of your orders.
 
 5. Requesting a Refund
-    If you need to request a refund for an order, click on the "View Details" button next to the order. From there, you can request either a full or partial refund by clicking on the respective buttons.
+   - If you need to request a refund for an order, click on the "View Details" button next to the order. From there, you can request either a full or partial refund by clicking on the respective buttons.
 
 ## Integration details
 
 ### 1. Stripe integration
 
 1.1 **Payment Integration**: 
-    The Stripe payment integration is handled in the backend using the Stripe API. You will need to configure your STRIPE_SECRET_KEY in the .env file to enable payments.
+   - The Stripe payment integration is handled in the backend using the Stripe API. You will need to configure your STRIPE_SECRET_KEY in the .env file to enable payments, and also set the STRIPE_ENDPOINT_SECRET to allow the webhook to function properly.
 
 1.2 **Checkout Session Creation**:
    - When a user proceeds to checkout, a **Stripe Checkout session** is created on the backend. This session represents the payment process for the selected items in the cart.

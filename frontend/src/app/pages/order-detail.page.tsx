@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PageTitle } from '../../components/ui/page-title';
 import { useEffect } from 'react';
 import useOrderRefund, { useGetOrderDetail } from '../../features/orders/hooks/orders';
@@ -47,13 +47,13 @@ export const OrderDetailPage = () => {
                 maxRefund={maxRefund}
             />
             <FullRefundDialog handleRefund={handleRefund} orderId={order!.id} isRefundPending={isRefundPending} />
-            <button
-                onClick={() => navigate(-1)}
+            <Link
+                to='/orders'
                 className='inline-flex items-center pb-2 gap-1 text-sm font-medium text-gray-700 hover:text-gray-900'
             >
                 <HiArrowLeft className='mr-1 h-5 w-5' />
                 Back
-            </button>
+            </Link>
             <PageTitle title={`Order ${order!.id.slice(-6)}`} />
 
             <div className='mt-8 space-y-8'>
@@ -184,13 +184,13 @@ export const OrderDetailPage = () => {
                     <div className='flex justify-end space-x-4'>
                         <button
                             onClick={openPartialRefund}
-                            className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'
+                            className='cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'
                         >
                             Refund Partially
                         </button>
                         <button
                             onClick={openFullRefund}
-                            className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'
+                            className='cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'
                         >
                             Refund Full Amount
                         </button>

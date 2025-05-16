@@ -84,7 +84,7 @@ export const PartialRefundDialog = ({ handleRefund, orderId, isRefundPending, ma
                             type='button'
                             disabled={isRefundPending}
                             onClick={closePartialRefund}
-                            className={`px-4 py-2 rounded-md border ${
+                            className={`cursor-pointer px-4 py-2 rounded-md border ${
                                 isRefundPending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'
                             }`}
                         >
@@ -93,7 +93,7 @@ export const PartialRefundDialog = ({ handleRefund, orderId, isRefundPending, ma
                         <button
                             type='submit'
                             disabled={isRefundPending}
-                            className={`px-4 py-2 rounded-md bg-blue-600 text-white inline-flex items-center ${
+                            className={`cursor-pointer px-4 py-2 rounded-md bg-blue-600 text-white inline-flex items-center ${
                                 isRefundPending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
                             }`}
                         >
@@ -137,7 +137,7 @@ export const FullRefundDialog = ({ orderId, handleRefund, isRefundPending }: Ful
                     <button
                         disabled={isRefundPending}
                         onClick={closeFullRefund}
-                        className={`px-4 py-2 rounded-md border ${
+                        className={`cursor-pointer px-4 py-2 rounded-md border ${
                             isRefundPending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'
                         }`}
                     >
@@ -146,7 +146,7 @@ export const FullRefundDialog = ({ orderId, handleRefund, isRefundPending }: Ful
                     <button
                         disabled={isRefundPending}
                         onClick={() => handleRefund({ orderId })}
-                        className={`px-4 py-2 rounded-md bg-blue-600 text-white inline-flex items-center ${
+                        className={`cursor-pointer px-4 py-2 rounded-md bg-blue-600 text-white inline-flex items-center ${
                             isRefundPending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
                         }`}
                     >

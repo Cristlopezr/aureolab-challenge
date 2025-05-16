@@ -15,18 +15,20 @@ export const Navbar = () => {
                         </Link>
                     </div>
                     <div className='flex items-center'>
-                        <div className='hidden sm:ml-6 sm:flex sm:space-x-8'>
-                            <NavLink
-                                to='/'
-                                className={({ isActive }) =>
-                                    isActive
-                                        ? 'inline-flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200 text-white border-b-2 border-white'
-                                        : 'inline-flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200 text-blue-100 hover:text-white hover:border-b-2 hover:border-blue-100'
-                                }
-                            >
-                                <HiHome className='w-5 h-5 mr-2' />
-                                Products
-                            </NavLink>
+                        <div className='sm:ml-6 sm:flex sm:space-x-8'>
+                            <div className='hidden sm:block'>
+                                <NavLink
+                                    to='/'
+                                    className={({ isActive }) =>
+                                        isActive
+                                            ? 'inline-flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200 text-white border-b-2 border-white'
+                                            : 'inline-flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200 text-blue-100 hover:text-white hover:border-b-2 hover:border-blue-100'
+                                    }
+                                >
+                                    <HiHome className='w-5 h-5 mr-2' />
+                                    Products
+                                </NavLink>
+                            </div>
                             <NavLink
                                 to='/cart'
                                 className={({ isActive }) =>
